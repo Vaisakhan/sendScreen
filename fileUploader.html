@@ -1,0 +1,59 @@
+<!Doctype html>
+<html>
+<head>
+<title>index</title>
+
+<style>
+  .thumb {
+    height: 75px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+  }
+  #uploadDiv{
+		background-color: rgba(252, 219, 148, 1);
+		border-width: ;
+		padding: 8%;
+		padding-top: 2%;
+  }
+</style>
+</head>
+<body>
+
+<h1>Post image</h1>
+<div id="uploadDiv">
+<form id="uploadForm" enctype="multipart/form-data"  action="/api/photo" method="post">
+<h3>Please select the image you want to upload</h3>
+<input type="file" name="userPhoto" id="files"/><br>
+<output id="list"></output>
+<input type="submit" value="Upload Image" id="uploadBtn" name="submit" style="display:none">
+</form>
+</div>
+<script>
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object	
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+      // Only process image files.
+      if (!f.type.match('image.*')) {
+        continue;
+      }
+      var reader = new FileReader();
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {	
+        return function(e) {
+		 // Render thumbnail.
+          var span = document.createElement('span');
+          span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                            '" title="', escape(theFile.name), '"/>'].join('');
+          document.getElementById('list').insertBefore(span, null);
+		  document.getElementById('uploadBtn').style.display = 'block';
+        };
+      })(f);
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);
+    }
+
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
