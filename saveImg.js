@@ -23,6 +23,13 @@ onFileUploadComplete: function (file) {
 }
 }));
 
+
+app.use(function(req, res, next){
+  console.log('setting request header');
+	res.setHeader('Access-Control-Allow-Origin', '*'); 
+	next();
+ });
+
 /*Handling routes.*/
 
 app.get('/',function(req,res){
@@ -31,10 +38,15 @@ app.get('/',function(req,res){
 });
 
 app.post('/api/photo',function(req,res){
+ 
   if(done==true){
     console.log(req.files);
-	res.sendfile("save.html");   
-	
+    res.statusCode = 201;
+    res.send('Image upload success');
+    res.sendfile("save.html");  	
+  }else{
+    res.statusCode = 403;
+    res.send('Image upload failed');
   }
 });
 
